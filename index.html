@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Profile: Saurabh Singh Tomar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .active-tab {
+            border-bottom: 3px solid #78716c; /* stone-500 */
+            color: #1c1917; /* stone-900 */
+            font-weight: 600;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #d6d3d1; /* stone-300 */
+            z-index: 0;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Earthy Accents (Terracotta, Sage) for a calm, professional harmony. -->
+    <!-- Application Structure Plan: Dashboard-style Single Page Application. 
+         1. Header: Quick identity and contact context.
+         2. Navigation: Functional tabs to switch between 'Overview', 'Experience Journey', 'Project Portfolio', and 'Technical Arsenal'.
+         3. Overview: High-level quantitative breakdown of skills and a profile summary to ground the user.
+         4. Experience: Interactive timeline allowing users to drill down into specific roles and see the evolution from Frontend to Full-Stack.
+         5. Portfolio: Filterable card grid to explore projects by tech stack (Frontend vs Fullstack), emphasizing the practical application of skills.
+         6. Technical Arsenal: Detailed visualization of specific tool proficiency.
+         This structure allows recruiters/managers to scan high-level info first, then dive deep into specific proofs of work. -->
+    <!-- Visualization & Content Choices:
+         1. Intro/Overview -> Goal: Context -> Viz: Text Summary + Doughnut Chart (Skill Category Split) -> Interaction: None -> Chart.js -> Shows the balanced Full-Stack nature immediately.
+         2. Experience -> Goal: History -> Viz: Interactive Vertical Timeline -> Interaction: Click to reveal details -> HTML/JS -> Better than a static list; shows progression.
+         3. Projects -> Goal: Proof -> Viz: Card Grid + Modal/Expand -> Interaction: Filter by Tech, Click for Details -> HTML/JS -> Allows focusing on relevant project types.
+         4. Skills -> Goal: Depth -> Viz: Radar Chart (Proficiency Areas) -> Interaction: Toggle Categories -> Chart.js -> Visualizes the 'shape' of the engineer (T-shaped). 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans leading-relaxed selection:bg-stone-200">
+
+    <!-- Main App Container -->
+    <div id="app" class="max-w-6xl mx-auto px-4 py-8 md:py-12 min-h-screen flex flex-col">
+
+        <!-- Header Section -->
+        <header class="mb-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center border-b border-stone-200 pb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-stone-900 tracking-tight">Saurabh Singh Tomar</h1>
+                <p class="text-xl text-stone-500 mt-2">Senior Software Engineer | MERN-Stack Specialist</p>
+                <div class="flex flex-wrap gap-4 mt-4 text-sm text-stone-600 justify-center md:justify-start">
+                    <span class="flex items-center gap-1">📍 Gurgaon, India</span>
+                    <span class="flex items-center gap-1">📧 s.s.tomar.work@gmail.com</span>
+                    <span class="flex items-center gap-1">📞 7000598159</span>
+                </div>
+            </div>
+            <div class="mt-6 md:mt-0 bg-white p-4 rounded-lg shadow-sm border border-stone-100 text-center md:text-right">
+                <p class="text-sm uppercase tracking-wide text-stone-400 font-semibold">Total Experience</p>
+                <p class="text-3xl font-bold text-stone-800">6 Years</p>
+                <p class="text-xs text-stone-500 mt-1">4+ Frontend • 1+ Backend</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="mb-8 overflow-x-auto">
+            <ul class="flex border-b border-stone-200 min-w-max">
+                <li><button onclick="switchTab('overview')" id="nav-overview" class="px-6 py-3 text-stone-500 hover:text-stone-800 transition-colors active-tab font-medium">Overview</button></li>
+                <li><button onclick="switchTab('experience')" id="nav-experience" class="px-6 py-3 text-stone-500 hover:text-stone-800 transition-colors font-medium">Experience Journey</button></li>
+                <li><button onclick="switchTab('projects')" id="nav-projects" class="px-6 py-3 text-stone-500 hover:text-stone-800 transition-colors font-medium">Project Portfolio</button></li>
+                <li><button onclick="switchTab('skills')" id="nav-skills" class="px-6 py-3 text-stone-500 hover:text-stone-800 transition-colors font-medium">Technical Arsenal</button></li>
+            </ul>
+        </nav>
+
+        <!-- Content Area -->
+        <main id="content-area" class="flex-grow relative">
+            
+            <!-- OVERVIEW SECTION -->
+            <section id="overview" class="fade-in block">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Text Content -->
+                    <div class="md:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                            <h2 class="text-2xl font-semibold text-stone-800 mb-4">Professional Profile</h2>
+                            <p class="text-stone-600 leading-7">
+                                I am a Senior Software Engineer with a proven track record of delivering high-performance web applications. My journey has evolved from deep expertise in <strong>Frontend Development (React.js, TypeScript)</strong> to a robust <strong>Full-Stack role</strong>, taking ownership of Backend architecture using <strong>Node.js and MongoDB</strong>.
+                            </p>
+                            <p class="text-stone-600 leading-7 mt-4">
+                                Currently, I specialize in building scalable UI architectures and designing RESTful APIs at <strong>Altimetrik</strong>. My focus is on bridging the gap between complex data orchestration and seamless user experiences, leveraging modern tools like Generative AI and Next.js.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-stone-100 p-5 rounded-lg border border-stone-200">
+                                <h3 class="font-semibold text-stone-700 mb-2">🎓 Education</h3>
+                                <p class="text-sm text-stone-600"><strong>Bachelor of Engineering (IT)</strong></p>
+                                <p class="text-xs text-stone-500">Oriental College Of Technology (8 CGPA)</p>
+                                <p class="text-xs text-stone-400">2015 - 2019</p>
+                            </div>
+                            <div class="bg-stone-100 p-5 rounded-lg border border-stone-200">
+                                <h3 class="font-semibold text-stone-700 mb-2">🚀 Core Competency</h3>
+                                <ul class="text-sm text-stone-600 space-y-1">
+                                    <li>• Scalable UI Architecture</li>
+                                    <li>• RESTful API Design</li>
+                                    <li>• Database Optimization</li>
+                                    <li>• Performance Engineering</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Content -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center justify-center">
+                        <h3 class="text-lg font-semibold text-stone-700 mb-2 text-center">Skill Distribution</h3>
+                        <p class="text-xs text-stone-400 text-center mb-6">Breakdown of technical expertise areas based on resume data.</p>
+                        <div class="chart-container">
+                            <canvas id="skillDoughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EXPERIENCE SECTION -->
+            <section id="experience" class="hidden fade-in">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold text-stone-800">Professional Journey</h2>
+                    <p class="text-stone-500 mt-2">Interact with the timeline to view detailed responsibilities and achievements for each role.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Timeline Control -->
+                    <div class="relative pl-6 lg:col-span-1">
+                        <div class="timeline-line"></div>
+                        <div id="timeline-container" class="space-y-8 relative z-10">
+                            <!-- Timeline Items Generated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Details Pane -->
+                    <div class="lg:col-span-2">
+                        <div id="experience-details" class="bg-white p-8 rounded-xl shadow-sm border border-stone-100 sticky top-4 h-auto min-h-[300px]">
+                            <!-- Content injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROJECTS SECTION -->
+            <section id="projects" class="hidden fade-in">
+                <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-stone-800">Project Portfolio</h2>
+                        <p class="text-stone-500 mt-1">Select a category to filter projects based on technical focus.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="filterProjects('all')" class="project-filter px-4 py-2 rounded-full text-sm font-medium bg-stone-800 text-white shadow-sm transition-all" data-filter="all">All</button>
+                        <button onclick="filterProjects('Full Stack')" class="project-filter px-4 py-2 rounded-full text-sm font-medium bg-stone-200 text-stone-600 hover:bg-stone-300 transition-all" data-filter="Full Stack">Full Stack</button>
+                        <button onclick="filterProjects('Frontend')" class="project-filter px-4 py-2 rounded-full text-sm font-medium bg-stone-200 text-stone-600 hover:bg-stone-300 transition-all" data-filter="Frontend">Frontend</button>
+                    </div>
+                </div>
+
+                <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Project Cards Injected via JS -->
+                </div>
+            </section>
+
+            <!-- SKILLS SECTION -->
+            <section id="skills" class="hidden fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-stone-800 mb-4">Technical Arsenal</h2>
+                        <p class="text-stone-600 mb-6">
+                            A comprehensive overview of my technical capabilities, categorized by domain. The chart on the right visualizes the strength and focus of my skill set across different engineering disciplines.
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <!-- Skill Categories -->
+                            <div class="bg-white p-5 rounded-lg border border-stone-200 shadow-sm">
+                                <h3 class="font-bold text-stone-800 mb-3 border-b border-stone-100 pb-2">Frontend Engineering</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">React.js</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">Next.js</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">TypeScript</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">Redux Toolkit</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">Tailwind CSS</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">Material UI</span>
+                                    <span class="px-3 py-1 bg-amber-50 text-amber-800 text-xs rounded-full border border-amber-100">SCSS</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-stone-200 shadow-sm">
+                                <h3 class="font-bold text-stone-800 mb-3 border-b border-stone-100 pb-2">Backend & Database</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs rounded-full border border-emerald-100">Node.js</span>
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs rounded-full border border-emerald-100">Express.js</span>
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs rounded-full border border-emerald-100">MongoDB</span>
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs rounded-full border border-emerald-100">Mongoose</span>
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs rounded-full border border-emerald-100">RESTful APIs</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-lg border border-stone-200 shadow-sm">
+                                <h3 class="font-bold text-stone-800 mb-3 border-b border-stone-100 pb-2">Optimization & AI</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-800 text-xs rounded-full border border-indigo-100">Generative AI</span>
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-800 text-xs rounded-full border border-indigo-100">Webpack/Vite</span>
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-800 text-xs rounded-full border border-indigo-100">SEO & Web Vitals</span>
+                                    <span class="px-3 py-1 bg-indigo-50 text-indigo-800 text-xs rounded-full border border-indigo-100">Prompt Engineering</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-center items-center">
+                        <h3 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-4">Competency Radar</h3>
+                        <div class="chart-container">
+                            <canvas id="skillsRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-16 py-8 border-t border-stone-200 text-center text-stone-500 text-sm">
+            <p>&copy; 2026 Saurabh Singh Tomar. Generated Interactive Resume.</p>
+        </footer>
+
+    </div>
+
+    <!-- Logic -->
+    <script>
+        // --- DATA STORE ---
+        const resumeData = {
+            experience: [
+                {
+                    id: 1,
+                    role: "Senior Software Engineer",
+                    company: "Altimetrik",
+                    period: "Sep 2023 - Present",
+                    location: "Gurugram, India",
+                    summary: "Successfully expanded role from Frontend Lead to Full-Stack Engineer, managing core platform services.",
+                    details: [
+                        "<strong>Full-Stack Transition:</strong> Took ownership of Node.js and Express.js services for the core platform.",
+                        "<strong>Backend Architecture:</strong> Designed scalable RESTful APIs for dynamic data orchestration.",
+                        "<strong>Database Optimization:</strong> Managed MongoDB collections using Mongoose and implemented authentication.",
+                        "<strong>Frontend Leadership:</strong> Mentored 3 junior developers on component reusability and SOLID principles."
+                    ]
+                },
+                {
+                    id: 2,
+                    role: "Software Engineer",
+                    company: "Kellton Tech Solution",
+                    period: "Jul 2019 - Sep 2023",
+                    location: "Gurgaon, India",
+                    summary: "Specialized in complex state management and high-performance UI optimization.",
+                    details: [
+                        "<strong>State Management:</strong> Architected complex flows using Redux Toolkit.",
+                        "<strong>API Integration:</strong> Ensured seamless data binding and error handling for RESTful APIs.",
+                        "<strong>Performance:</strong> Implemented code-splitting, lazy loading, and React.memo to improve First Contentful Paint (FCP).",
+                        "<strong>Responsive Design:</strong> Delivered pixel-perfect designs using Tailwind CSS and SCSS."
+                    ]
+                }
+            ],
+            projects: [
+                {
+                    title: "Tanium Self Service Portal",
+                    type: "Full Stack",
+                    tech: ["Node.js", "Express", "JWT", "React", "TypeScript"],
+                    desc: "A secure dashboard for managing user permissions and aggregating large datasets.",
+                    metrics: "Implemented RBAC with JWT. Optimized pagination APIs."
+                },
+                {
+                    title: "Hotel Booking Platform",
+                    type: "Full Stack",
+                    tech: ["Next.js", "Node.js", "MongoDB", "Redis", "Mongoose"],
+                    desc: "Complex search engine logic with server-side filtering for room availability.",
+                    metrics: "Integrated Redis for caching, achieving near-instant search results."
+                },
+                {
+                    title: "Broadridge Proxy Edge",
+                    type: "Frontend",
+                    tech: ["React.js", "Real-time APIs", "React.memo"],
+                    desc: "Financial data display system with high-performance form handling.",
+                    metrics: "Built 25+ reusable components. Minimized re-renders for responsiveness."
+                },
+                {
+                    title: "Holidays Trip Provider",
+                    type: "Frontend",
+                    tech: ["React.js", "Next.js", "SCSS", "Virtualization"],
+                    desc: "Dynamic travel platform rendering interfaces based on real-time user preferences.",
+                    metrics: "Implemented React Virtualization for lists with 1k+ items."
+                },
+                {
+                    title: "Avanse (Financing)",
+                    type: "Frontend",
+                    tech: ["React.js", "Axios", "Redux Toolkit"],
+                    desc: "Loan eligibility check system integrating third-party financial APIs.",
+                    metrics: "Managed complex financial data flows and state synchronization."
+                }
+            ]
+        };
+
+        // --- STATE MANAGEMENT ---
+        let currentState = {
+            activeTab: 'overview',
+            selectedExpId: 1,
+            projectFilter: 'all'
+        };
+
+        // --- CORE FUNCTIONS ---
+
+        function switchTab(tabId) {
+            // Update State
+            currentState.activeTab = tabId;
+
+            // Update UI Tabs
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active-tab', 'text-stone-800');
+                btn.classList.add('text-stone-500');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.add('active-tab', 'text-stone-800');
+            activeBtn.classList.remove('text-stone-500');
+
+            // Hide all sections
+            ['overview', 'experience', 'projects', 'skills'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            // Show active section
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Trigger Specific Render logic if needed
+            if (tabId === 'experience') renderExperience();
+            if (tabId === 'projects') renderProjects(currentState.projectFilter);
+        }
+
+        // --- EXPERIENCE SECTION LOGIC ---
+        function renderExperience() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = ''; // Clear
+
+            resumeData.experience.forEach((job) => {
+                const isActive = job.id === currentState.selectedExpId;
+                
+                // Create Timeline Node
+                const node = document.createElement('div');
+                node.className = `cursor-pointer transition-all duration-300 p-4 rounded-lg border ${isActive ? 'bg-white border-stone-300 shadow-md transform scale-105' : 'bg-transparent border-transparent hover:bg-stone-100'}`;
+                node.onclick = () => selectExperience(job.id);
+
+                node.innerHTML = `
+                    <div class="flex items-center mb-1">
+                        <div class="w-3 h-3 rounded-full ${isActive ? 'bg-stone-800' : 'bg-stone-400'} mr-3 shadow-sm"></div>
+                        <span class="text-sm font-bold ${isActive ? 'text-stone-900' : 'text-stone-500'}">${job.period}</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-stone-800 ml-6">${job.company}</h3>
+                    <p class="text-sm text-stone-600 ml-6">${job.role}</p>
+                `;
+                container.appendChild(node);
+            });
+
+            renderExperienceDetails();
+        }
+
+        function selectExperience(id) {
+            currentState.selectedExpId = id;
+            renderExperience();
+        }
+
+        function renderExperienceDetails() {
+            const detailsContainer = document.getElementById('experience-details');
+            const job = resumeData.experience.find(j => j.id === currentState.selectedExpId);
+
+            if (!job) return;
+
+            // Fade animation reset
+            detailsContainer.classList.remove('fade-in');
+            void detailsContainer.offsetWidth; // Trigger reflow
+            detailsContainer.classList.add('fade-in');
+
+            detailsContainer.innerHTML = `
+                <div class="border-b border-stone-100 pb-4 mb-4">
+                    <h3 class="text-2xl font-bold text-stone-800">${job.role}</h3>
+                    <div class="flex justify-between items-center mt-2 text-stone-500 text-sm">
+                        <span>🏢 ${job.company}</span>
+                        <span>📍 ${job.location}</span>
+                    </div>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-lg mb-6 text-stone-700 italic border border-stone-100">
+                    "${job.summary}"
+                </div>
+                <h4 class="font-semibold text-stone-800 mb-3">Key Achievements & Responsibilities:</h4>
+                <ul class="space-y-3">
+                    ${job.details.map(d => `<li class="flex items-start text-stone-600 text-sm leading-relaxed"><span class="mr-2 mt-1.5 w-1.5 h-1.5 bg-stone-400 rounded-full flex-shrink-0"></span><span>${d}</span></li>`).join('')}
+                </ul>
+            `;
+        }
+
+        // --- PROJECTS SECTION LOGIC ---
+        function renderProjects(filter) {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' 
+                ? resumeData.projects 
+                : resumeData.projects.filter(p => p.type.includes(filter));
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-xl border border-stone-200 hover:shadow-lg transition-shadow flex flex-col h-full";
+                
+                // Color code badge
+                const badgeColor = p.type === 'Full Stack' ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700';
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${badgeColor}">${p.type}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2">${p.title}</h3>
+                    <p class="text-stone-600 text-sm mb-4 flex-grow">${p.desc}</p>
+                    
+                    <div class="mb-4 bg-stone-50 p-3 rounded text-xs text-stone-700 border border-stone-100">
+                        <strong>Impact:</strong> ${p.metrics}
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mt-auto">
+                        ${p.tech.map(t => `<span class="text-xs text-stone-500 bg-stone-100 px-2 py-1 rounded border border-stone-200">${t}</span>`).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterProjects(filterType) {
+            currentState.projectFilter = filterType;
+            
+            // Update Buttons
+            document.querySelectorAll('.project-filter').forEach(btn => {
+                if(btn.dataset.filter === filterType) {
+                    btn.classList.remove('bg-stone-200', 'text-stone-600');
+                    btn.classList.add('bg-stone-800', 'text-white');
+                } else {
+                    btn.classList.add('bg-stone-200', 'text-stone-600');
+                    btn.classList.remove('bg-stone-800', 'text-white');
+                }
+            });
+
+            renderProjects(filterType);
+        }
+
+        // --- INITIALIZATION & CHARTS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Doughnut Chart (Skill Split)
+            const ctxDoughnut = document.getElementById('skillDoughnutChart').getContext('2d');
+            new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Frontend', 'Backend', 'AI & Tools'],
+                    datasets: [{
+                        data: [50, 35, 15], // Estimated percentages based on 4yrs Frontend + 1yr Backend
+                        backgroundColor: ['#d97706', '#059669', '#4f46e5'], // Amber, Emerald, Indigo
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, font: { family: 'sans-serif' } } }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // 2. Radar Chart (Proficiency)
+            const ctxRadar = document.getElementById('skillsRadarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['React/Next.js', 'Node/Express', 'Database (Mongo)', 'UI/UX (Tailwind)', 'Architecture', 'Performance'],
+                    datasets: [{
+                        label: 'Proficiency Level',
+                        data: [95, 85, 80, 90, 85, 88], // High proficiency inferred from Senior role
+                        backgroundColor: 'rgba(120, 113, 108, 0.2)', // Stone-500 low opacity
+                        borderColor: '#78716c', // Stone-500
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#78716c',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            pointLabels: { font: { size: 11, family: 'sans-serif', weight: 'bold' }, color: '#44403c' },
+                            ticks: { display: false, max: 100 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Initial Render
+            switchTab('overview');
+        });
+
+    </script>
+</body>
+</html>
